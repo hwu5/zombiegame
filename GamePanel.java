@@ -34,8 +34,8 @@ public class GamePanel extends JPanel implements ActionListener{
     final int maxBoundX = 1000;
     final int maxBoundY = 1500;
     final int leave_out = 5;
-    int BoundX;
-    int BoundY;
+    int BoundX = 0;
+    int BoundY = 0;
     //player
     double player_covering = 0;
     Player playeri;
@@ -48,22 +48,22 @@ public class GamePanel extends JPanel implements ActionListener{
     List<Escape> escapes_lst = new ArrayList<Escape>();
     //woodblock
     List<WoodBlock> woodblocks_lst = new ArrayList<WoodBlock>();
-    static final double[][] mazeMap_ori = {
+    double[][] maze_map = {
             {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-            {1,0,5,7,7,4,0,1,1,1,1,1,1,0,0,5,0,0,0,0,0,0,0,0,0,1},
-            {1,1,1,1,1,1,0,0,0,0,0,0,1,0,1,0,0,0,0,1,0,1,0,5,0,1},
-            {1,2,4.1,7,0,0,0,1,0,1,1,0,1,0,3,0,0,3,0,1,0,1,3,1,0,1},
-            {1,1,1,1,0,0,0,1,0,0,0,0,0,0,0,0,5,0,0,1,0,0,0,0,0,1},
+            {1,0,5,7,7,4,0,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1},
+            {1,1,1,1,1,1,0,1,0,0,0,0,1,0,1,0,0,0,0,1,0,0,0,0,0,1},
+            {1,2,0,7,0,0,0,1,0,1,1,0,1,0,3,0,0,3,0,1,0,0,3,1,0,1},
+            {1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1},
             {1,0,0,1,0,1,0,1,0,1,1,1,1,0,0,0,0,0,0,1,3,0,0,0,3,1},
             {1,0,0,1,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,1,1,1},
-            {1,0,0,0,3,1,0,0,6,5,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,1},
-            {1,0,0,1,0,1,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,5,0,1},
+            {1,0,0,0,3,1,0,0,0,5,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,1},
+            {1,0,0,1,0,1,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,1},
             {1,0,0,0,0,1,0,0,1,0,1,0,0,0,0,0,1,0,0,1,0,0,1,1,0,1},
-            {1,1,1,0,0,1,4,1,1,1,1,0,5,0,1,1,1,0,0,1,0,0,0,1,0,1},
-            {1,5,4,0,0,1,0,0,0,0,1,0,0,0,1,0,0,0,0,1,0,0,0,0,0,1},
+            {1,1,1,0,0,1,0,1,1,1,1,0,0,0,1,1,1,0,0,1,0,0,0,0,1,1},
+            {1,5,4,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,6,1},
             {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
     };
-    double[][] maze_map;
+
 
     //key
     List<Lock> locks_lst = new ArrayList<Lock>();
@@ -76,21 +76,12 @@ public class GamePanel extends JPanel implements ActionListener{
 
     //others
     boolean running = false;
-    boolean replay = false;
-    boolean showHelp = true;
     Timer timer;
     Random random;
-    JButton buttonexit;
-    GameFrame thisFrameOut;
+
     //images
     BufferedImage bricks_img = null;
     BufferedImage ground_img = null;
-    BufferedImage badEnding_img = null;
-    BufferedImage goodEnding_img = null;
-    BufferedImage playAgain_img = null;
-    BufferedImage helpImg = null;
-    BufferedImage f1Img = null;
-
 
     public static Dictionary[] add_array_dict(int n, Dictionary arr[], Dictionary x)
     {
@@ -132,18 +123,13 @@ public class GamePanel extends JPanel implements ActionListener{
         return newarr;
     }
 
-    GamePanel(GameFrame thisF){
+    GamePanel(){
         random = new Random();
-        //buttonexit = new JButton("message");
-
-        //buttonexit.addActionListener(this);
         this.setPreferredSize(new Dimension(SCREEN_WIDTH,SCREEN_HEIGHT));
         this.setBackground(Color.black);
         this.setFocusable(true);
         this.addKeyListener(new MyKeyAdapter());
         this.addMouseListener(new MyMouseEvent());
-        //this.add(buttonexit);
-        thisFrameOut = thisF;
 
 
 
@@ -161,73 +147,19 @@ public class GamePanel extends JPanel implements ActionListener{
             ground_img = ImageIO.read(new File("ground_mini_game.png"));
         }
         catch (IOException e) {
-            System.out.println("ground_mini_game import error");
+            System.out.println("ground import error");
         }
 
-        try {
-            badEnding_img = ImageIO.read(new File("badEnding.png"));
-        }
-        catch (IOException e) {
-            System.out.println("badEnding import error");
-        }
-
-        try {
-            goodEnding_img = ImageIO.read(new File("goodEnding.png"));
-        }
-        catch (IOException e) {
-            System.out.println("goodEnding import error");
-        }
-
-        try {
-            playAgain_img = ImageIO.read(new File("playAgain.png"));
-        }
-        catch (IOException e) {
-            System.out.println("playAgain import error");
-        }
-
-
-        try {
-            helpImg = ImageIO.read(new File("help.png"));
-        }
-        catch (IOException e) {
-            System.out.println("f1 import error");
-        }
-
-        try {
-            f1Img = ImageIO.read(new File("f1.png"));
-        }
-        catch (IOException e) {
-            System.out.println("help import error");
-        }
-
-
-        maze_map = mazeMap_ori.clone();
-        System.out.println("start game check"+maze_map[3][1]);
-        System.out.println("start game check final"+mazeMap_ori[3][1]);
 
         //make lists of NPCs and locks, and init player
-        Zombies_lst.clear();
-        locks_lst.clear();
-        treasures_lst.clear();
-        escapes_lst.clear();
-        woodblocks_lst.clear();
-
-        Zombie.Zombies_loc_sta_lst.clear();
-        Lock.loc_arr_static.clear();
-        Treasure.Treasures_loc_sta_lst.clear();
-        Escape.Escapes_loc_sta_lst.clear();
-        WoodBlock.WoodBlocks_loc_sta_lst.clear();
-
-        BoundX = 0;
-        BoundY = 0;
 
         int treasure_id = 0;
         int lock_id = 0;
         int zombie_id = 0;
         int escape_id = 0;
         int woodblock_id = 0;
-        for(int yy=0; yy<mazeMap_ori.length; yy++){
-            for(int xx=0; xx<mazeMap_ori[yy].length; xx++){
+        for(int yy=0; yy<maze_map.length; yy++){
+            for(int xx=0; xx<maze_map[yy].length; xx++){
                 /*
                 menu
                 0 -> road
@@ -235,15 +167,14 @@ public class GamePanel extends JPanel implements ActionListener{
                 2 -> player
                 3 -> zombie
                 4 -> lock
-                5 -> treasure
+                5 -> treasure ldh photo play again your computer is hacked never play a game given by a random person
                 6 -> escape
                  */
                 //System.out.println(xx+", "+yy);
 
                 if (maze_map[yy][xx] == 2){
                     playeri = new Player(xx, yy, "player.jpg", 0);
-                    System.out.println("maploc: "+xx+", "+yy);
-                    System.out.println("playerloc: "+playeri.x+","+playeri.y);
+                    //System.out.println(playeri.x+", "+playeri.y);
                 }
 
                 else if (maze_map[yy][xx] == 3){
@@ -254,7 +185,7 @@ public class GamePanel extends JPanel implements ActionListener{
                     zombie_id += 1;
 
                 }
-                else if (maze_map[yy][xx] == 4 || maze_map[yy][xx] == 4.1){
+                else if (maze_map[yy][xx] == 4){
                     //lock
                     String this_uncracked_im =  "C:\\Users\\hhh43\\IdeaProjects\\test_gui\\lock.png";
                     String this_cracked_im =  "C:\\Users\\hhh43\\IdeaProjects\\test_gui\\unlock.png";
@@ -308,14 +239,11 @@ public class GamePanel extends JPanel implements ActionListener{
     }
 
     public void paintComponent(Graphics g) {
-
         super.paintComponent(g);
-        //System.out.println("paintComponent");
         draw(g);
     }
 
     public void draw(Graphics g) {
-        //System.out.println("draw");
 
 
 
@@ -424,7 +352,6 @@ public class GamePanel extends JPanel implements ActionListener{
             FontMetrics metrics = getFontMetrics(g.getFont());
             g.drawString("Treausre count: "+playeri.treasure_count, (MAZE_WIDTH - metrics.stringWidth("Treausre count: "+1))/2, g.getFont().getSize());
 
-
             //g.setColor(Color.red);
             //g.setFont( new Font("Ink Free",Font.BOLD, 40));
             //FontMetrics metrics = getFontMetrics(g.getFont());
@@ -514,40 +441,7 @@ public class GamePanel extends JPanel implements ActionListener{
 
             }
 
-            if(playeri.deadOfZombie) {
-                String message = Integer.toString(playeri.treasure_count);
-                g.drawImage(badEnding_img,(MAZE_WIDTH - badEnding_img.getWidth())/2, (MAZE_HEIGHT) / 2-20, this);
 
-                g.setColor(Color.green);
-                g.setFont( new Font("Helvetica",Font.BOLD, 40));
-
-                g.drawString(message, MAZE_WIDTH / 2 + 110, (int) (MAZE_HEIGHT) / 2 + 45);
-
-
-
-
-            }
-            else if(playeri.beatGame){
-                String message = Integer.toString(playeri.treasure_count);
-                int height = (int)(((double) badEnding_img.getWidth()/goodEnding_img.getWidth()) * goodEnding_img.getHeight());
-
-                g.drawImage(goodEnding_img,(MAZE_WIDTH - badEnding_img.getWidth())/2, (MAZE_HEIGHT) / 2-20, badEnding_img.getWidth(), height,  this);
-
-                g.setColor(Color.green);
-                g.setFont( new Font("Helvetica",Font.BOLD, 40));
-
-                g.drawString(message, MAZE_WIDTH / 2 - 80, (int) (MAZE_HEIGHT) / 2 + 89);
-            }
-
-        if(showHelp) {
-
-            g.drawImage(helpImg,0, 0, this);
-
-            timer.stop();
-        }
-        else{
-            g.drawImage(f1Img,0, 0, this);
-        }
 
 
 
@@ -735,7 +629,6 @@ public class GamePanel extends JPanel implements ActionListener{
 
         if (playeri.zombieDegree>=3){
             running = false;
-            playeri.deadOfZombie = true;
         }
 
         if(!running) {
@@ -755,7 +648,18 @@ public class GamePanel extends JPanel implements ActionListener{
         }
     }
 
+    @Override
+    public void actionPerformed(ActionEvent e) {
 
+        if(running) {
+            checkAroundLock();
+            //checkHitCovid();
+            checkZombieStatus();
+            //checklock();
+            zombieMove();
+        }
+        repaint();
+    }
 
     public void unlock(int lock_id, int oper, int pos_hori, int pos_height) {
 
@@ -777,39 +681,6 @@ public class GamePanel extends JPanel implements ActionListener{
             }
         }
 
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent a) {
-
-        if(running) {
-            checkAroundLock();
-            //checkHitCovid();
-            checkZombieStatus();
-            //checklock();
-            zombieMove();
-        }
-
-
-        repaint();
-        //System.out.println("out");
-        //System.out.println(maze_map[3][1]);
-        /*
-        String buttonName = a.getActionCommand();
-        System.out.println(buttonName);
-
-        if (buttonName != null) {
-            switch (buttonName) {
-                case "message":
-                    System.out.println("clicked");
-                    break;
-                default:
-                    System.out.println("default was called in button switch, should not have happened");
-                    break;
-            }
-        }
-        //System.out.println("out");
-        */
     }
 
     public class MyMouseEvent extends MouseAdapter {
@@ -904,7 +775,7 @@ public class GamePanel extends JPanel implements ActionListener{
                         //System.out.println(playeri.treasure_count);
                     }
                     break;
-                case KeyEvent.VK_K:
+                case KeyEvent.VK_NUMPAD2:
                     if (maze_map[playeri.y+1][playeri.x] == 0){
                         if (playeri.woodblock_count > 0) {
 
@@ -918,7 +789,7 @@ public class GamePanel extends JPanel implements ActionListener{
                         playeri.woodblock_count += 1;
                     }
                     break;
-                case KeyEvent.VK_I:
+                case KeyEvent.VK_NUMPAD8:
                     if (maze_map[playeri.y-1][playeri.x] == 0){
                         if (playeri.woodblock_count > 0) {
 
@@ -932,7 +803,7 @@ public class GamePanel extends JPanel implements ActionListener{
                         playeri.woodblock_count += 1;
                     }
                     break;
-                case KeyEvent.VK_J:
+                case KeyEvent.VK_NUMPAD4:
                     if (maze_map[playeri.y][playeri.x-1] == 0){
                         if (playeri.woodblock_count > 0) {
 
@@ -946,7 +817,7 @@ public class GamePanel extends JPanel implements ActionListener{
                         playeri.woodblock_count += 1;
                     }
                     break;
-                case KeyEvent.VK_L:
+                case KeyEvent.VK_NUMPAD6:
                     if (maze_map[playeri.y][playeri.x+1] == 0){
                         if (playeri.woodblock_count > 0) {
 
@@ -981,41 +852,10 @@ public class GamePanel extends JPanel implements ActionListener{
 
                     if (Escape.getEscapeI(playeri.x, playeri.y) != -404) {
                         System.out.println("final score: " + playeri.treasure_count);
-                        playeri.beatGame = true;
                         running = false;
                     }
                     break;
 
-                case KeyEvent.VK_F1:
-                    System.out.println("showHelp: "+showHelp);
-                    if(showHelp){
-                        showHelp = false;
-                        timer.start();
-
-                    }
-                    else{
-                        showHelp = true;
-                    }
-                    break;
-
-                case KeyEvent.VK_V:
-                    maze_map[playeri.y][playeri.x] = playeri.covering;
-
-                    playeri.x = 1;
-                    playeri.y = 3;
-
-                    maze_map[playeri.y][playeri.x] = 2;
-                    playeri.zombieDegree = 0;
-
-                    BoundX = 0;
-                    BoundY = 0;
-                    playeri.deadOfZombie = false;
-                    startGame();
-                    //running = true;
-                    //timer.start();
-
-
-                    break;
 
                 default:
                     break;
