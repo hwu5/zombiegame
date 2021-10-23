@@ -1,3 +1,4 @@
+package com.codewithhowie;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -151,10 +152,10 @@ public class GamePanel extends JPanel implements ActionListener{
     public void startGame() {
 
         try {
-            bricks_img = ImageIO.read(new File("brick.png"));
+            bricks_img = ImageIO.read(new File("C:\\Users\\hhh43\\IdeaProjects\\test_gui\\brick.png"));
         }
         catch (IOException e) {
-            System.out.println("brick import error");
+            System.out.println("read brick import error");
         }
         try {
             ground_img = ImageIO.read(new File("ground_mini_game.png"));
@@ -234,7 +235,7 @@ public class GamePanel extends JPanel implements ActionListener{
                 2 -> player
                 3 -> zombie
                 4 -> lock
-                5 -> treasure ldh photo play again your computer is hacked never play a game given by a random person
+                5 -> treasure
                 6 -> escape
                  */
                 //System.out.println(xx+", "+yy);
@@ -255,8 +256,8 @@ public class GamePanel extends JPanel implements ActionListener{
                 }
                 else if (maze_map[yy][xx] == 4 || maze_map[yy][xx] == 4.1){
                     //lock
-                    String this_uncracked_im =  "lock.png";
-                    String this_cracked_im =  "unlock.png";
+                    String this_uncracked_im =  "C:\\Users\\hhh43\\IdeaProjects\\test_gui\\lock.png";
+                    String this_cracked_im =  "C:\\Users\\hhh43\\IdeaProjects\\test_gui\\unlock.png";
                     Lock this_lock = new Lock(lock_id, xx, yy, 5, this_uncracked_im, this_cracked_im);
                     locks_lst.add(this_lock);
 
